@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectID } = require('mongodb');
 
 const url = 'mongodb://localhost:27017';
 const dbName = 'hatshop';
@@ -6,19 +6,55 @@ const collectionName = 'hats';
 
 console.log('About to connect to database...');
 
-MongoClient.connect(url, { useUnifiedTopology: true }, (error, client) => {
-    if( error ) {
-        console.log('Could not connect!', error.message);
-        return;
-    }
-    console.log('Connected to database');
 
-    const db = client.db(dbName);
-    const col = db.collection(collectionName);
-    insertHats(col, () => {
-        findHats(col, () => client.close())
-    });
-})
+function runQuery(queryFunction) {
+    // Anslut till MongoDB
+    MongoClient.connect(
+        url,
+        { useUnifiedTopology: true },
+        (error, client) => {
+            // Kontrollera om anslutningen lyckats eller misslyckats
+            if( error ) {
+                console.log('Could not connect to database: ' + error.message);
+                return;
+                // Om man gör detta i en Express route, behöver man skicka ett lämpligt felmeddelande till frontend
+            }
+
+            // Ta fram den collection som query ska köras i
+            const col = client.db(dbName).collection(collectionName);
+
+            queryFunction(
+                col,
+                () => client.close()
+            )
+        }// connect callback
+    )//connect
+}//runQuery
+
+const exampleFind = (col, whenDone) => {
+    col.find({ color: 'black' }).toArray((error, docs) => {
+        try {
+            if( error ) {
+                console.log('Bad find query!', error.message);
+                return;
+            }
+            console.log('Found documents:');
+            docs.forEach(doc => {
+                console.log(`* ${doc.name}, ${doc.color}, ${doc.price} kr`);
+            })
+        } finally {
+            whenDone();
+        }
+    })
+}
+
+runQuery(exampleFind)
+
+
+// Funktionerna nedan är exempel på CRUD-funktionalitet
+// men ÄR INTE ANPASSADE FÖR RUNQUERY
+// Skriv gärna om dem själv!
+
 function findHats(col, callback) {
     col.find({}).toArray((error, docs) => {
         try {
@@ -35,6 +71,7 @@ function findHats(col, callback) {
         }
     })
 }
+
 
 function insertHats(col, callback) {
     col.insertMany(
@@ -56,4 +93,32 @@ function insertHats(col, callback) {
             }
         }
     )
+}
+
+
+function updateHat(col, client) {
+    // const filter = { _id: new ObjectID("5d62f9ac559322bc151c056c") };
+    const filter = { name: 'cap' };
+    const update = { $inc: { price: 5 } };
+    col.updateOne(filter, update, (error, result) => {
+        if( error ) {
+            console.log('Could not update hat', error.message);
+        } else {
+            console.log('Hat updated', result.result);
+        }
+        client.close();
+    })
+}
+
+
+function deleteHat(col, client) {
+    const filter = { _id: new ObjectID("5f4507bb4d09a43064bb84fa")}
+    col.deleteOne(filter, (error, result) => {
+        if( error ) {
+            console.log('Could not remove hat', error.message);
+        } else {
+            console.log('Removed hat', result.result);
+        }
+        client.close();
+    })
 }
