@@ -1,0 +1,77 @@
+MongoDB queries
+
+db.animaldb.insertOne( { "name": "alpacca", "spitting": "yes" } )
+
+db.animalsdb.deleteMany({})
+
+db.animaldb.find({ name: "snail" })
+
+db.animaldb.find({ speed: { $gt: 50 } })
+
+db.animaldb.find({ _id: 10122 })
+db.animaldb.updateOne( { _id: 10122 }, { $set: { speed: 2 } } )
+db.animaldb.updateOne(
+	{ _id: 10122 },
+	{ $set: { speed: 2 } }
+)
+
+
+Övningar
+2 Skriv följande kommandon i mongo-terminalen. Du ska få en siffra som svar på sista raden. Vilken siffra och varför?
+show dbs
+use hatshop
+show collections
+db.hats.count()
+
+
+3 Lägg till följande hattar i en collection som heter hats en i taget:
+{ name: 'tophat', color: black, price: 350 }
+{ name: 'cap', color: red, price: 89 }
+{ name: 'straw hat', color: 'yellow', price: 140 }
+
+db.hats.insertOne({ name: 'tophat', color: "black", price: 350 })
+db.hats.insertOne({ name: 'cap', color: "red", price: 89 })
+db.hats.insertOne({ name: 'straw hat', color: 'yellow', price: 140 })
+db.hats.find()
+
+
+4 Skriv en query som…
+4a hämtar alla hattar ur db.hats
+4b hämtar en hatt (vilken som helst)
+4c hämtar alla svarta hattar
+4d* hämtar alla hattar som kostar över 300 kr.
+4e använd pretty för att göra resultatet från någon tidigare query mera lättläst
+
+db.hats.find(  )
+db.hats.find().limit(1)   <-- praktiskt att kombinera med .skip()
+db.hats.find({ color: "black" })
+db.hats.find({ price: { $gt: 300 } })
+
+
+
+5 Skriv en query som…
+5a lägger till en ny hatt i databasen (hitta på lämpliga värden)
+5b tar bort den nya hatten. Använd hattens id, som du fick i uppgift 5a
+5c tar bort alla hattar!
+5d lägger in alla hattar från uppgift 3 igen, men med en query i stället för tre
+
+db.hats.insertOne({ name: "fez", color: "red", price: 200 })
+db.hats.deleteOne({ _id: ObjectId("5f44d4f9e5a80588b70579df") })
+db.hats.deleteMany({})
+db.hats.insertMany([
+	{ name: "tophat", color: "black", price: 350 },
+	{ name: "cap", color: "red", price: 89 },
+	{ name: "straw hat", color: "yellow", price: 140 }
+])
+
+
+
+6 Skriv en query som…
+6a ändrar färgen på en av hattarna
+6b ökar priset på hatten med 10 kr
+6c* minskar priset med 25%.
+
+db.hats.updateOne( { _id: ObjectId("5f44d6f2e5a80588b70579e4") }, { $set: { color: "gold" } } )
+db.hats.updateOne( { _id: ObjectId("5f44d6f2e5a80588b70579e4") }, { $inc: { price: 10 } } )
+
+db.hats.updateOne( { _id: ObjectId("5f44d6f2e5a80588b70579e4") }, { $mul: { price: 0.75 } } )

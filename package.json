@@ -1,0 +1,12 @@
+{
+  "name": "46-mongo-queries",
+  "version": "1.0.0",
+  "description": "MongoDB queries, exercises",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["mongodb", "queries"],
+  "author": "David Andersson",
+  "license": "ISC"
+}
