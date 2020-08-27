@@ -49,6 +49,8 @@ const exampleFind = (col, whenDone) => {
 }
 
 const exampleDelete = (col, whenDone) => {
+    // if( color === 'red' && color === 'green' )  <- does not work
+    // if( color === 'red' || color === 'green' )  <- works
     // if _id === ObjectId("5f4507bb4d09a43064bb84f9") ||
     //     _id === ObjectId("5f45063a21f2ce5810586e7c")
     const filter = {
