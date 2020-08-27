@@ -1,0 +1,55 @@
+
+
+Mål:
+se alla verktyg i bokstavsordning
+
+1. välja ut verktyg
+2. sortera efter namn
+3. visa de 5 första
+
+db.products.find({ category: "tool" }) .sort({ name: 1 }) .limit(5)
+db.products.find({ category: "tool" }) .sort({ price: 1 }) .limit(5)
+db.products.find({ category: "tool" }) .sort({ price: 1, name: 1 }) .limit(10)
+
+db.products.createIndex({ price: 1, name: 1 })
+
+db.hats.insertOne({ name: "TopHat", price: 555, color: "bLaCk" })
+
+
+db.hats.aggregate([
+    {
+        $group: {
+            _id: null,
+            totalPrice: {
+                $sum: "$price"
+            }
+        }
+    }
+])
+db.hats.aggregate([ { $group: { _id: null, totalPrice: { $sum: "$price" } } } ])
+
+
+db.hats.aggregate([
+    {
+        $group: {
+            _id: "$color",
+            count: { $sum: 1 },
+            totalPrice: { $sum: "$price" },
+            mostExpensive: { $max: "$price" }
+        }
+    }
+])
+db.hats.aggregate([ { $group: { _id: "$color", count: { $sum: 1 }, totalPrice: { $sum: "$price" }, mostExpensive: { $max: "$price" } } } ])
+
+
+db.hats.aggregate([
+    {
+        $project: {
+            name: 1,
+            price: {
+                $add: ["$price", 10]
+            }
+        }
+    }
+])
+db.hats.aggregate([ { $project: { name: 1, price: { $add: ["$price", 10] } } } ])
