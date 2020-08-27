@@ -48,7 +48,29 @@ const exampleFind = (col, whenDone) => {
     })
 }
 
-runQuery(exampleFind)
+const exampleDelete = (col, whenDone) => {
+    // if _id === ObjectId("5f4507bb4d09a43064bb84f9") ||
+    //     _id === ObjectId("5f45063a21f2ce5810586e7c")
+    const filter = {
+        $or: [
+            { _id: ObjectID("5f4507bb4d09a43064bb84f9") },
+            { _id: ObjectID("5f45063a21f2ce5810586e7c") }
+        ]
+    }
+    col.deleteMany(filter, (error, result) => {
+        try {
+            if( error ) {
+                console.log('Error when deleting: ' + error.message);
+                return;
+            }
+            console.log(`Deleted ${result.deletedCount} documents.`);
+        } finally {
+            whenDone();
+        }
+    })
+}
+
+runQuery(exampleDelete)
 
 
 // Funktionerna nedan är exempel på CRUD-funktionalitet
